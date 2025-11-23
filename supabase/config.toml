@@ -1,0 +1,4 @@
+project_id = "cxoqzcjgdewgqfljzyek"
+
+[functions.cleanup-applications]
+verify_jwt = false
