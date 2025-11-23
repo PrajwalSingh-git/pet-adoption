@@ -20,7 +20,7 @@ A modern, full-stack pet adoption website where users can browse pets, submit ad
 
 ---
 
-## 🧰 Tech Stack
+🧰 Tech Stack
 
 | Layer | Technologies |
 |-------|--------------|
@@ -31,7 +31,7 @@ A modern, full-stack pet adoption website where users can browse pets, submit ad
 
 ---
 
-## 📁 Project Structure
+📁 Project Structure
 
 pet-adoption/
 ├── public/
@@ -49,12 +49,9 @@ pet-adoption/
 └── vite.config.ts
 
 
----
-
 ## ⚙️ Getting Started
 
-### 1️⃣ Clone the Repo
-```bash
+1️⃣ Clone the Repo
 git clone https://github.com/PrajwalSingh-git/pet-adoption.git
 cd pet-adoption
 
