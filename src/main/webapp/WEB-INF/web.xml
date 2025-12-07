@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+
+    <display-name>Pet Adoption Java</display-name>
+
+    <welcome-file-list>
+        <welcome-file>login</welcome-file>
+    </welcome-file-list>
+
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.petadoption.web.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>com.petadoption.web.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.petadoption.web.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>PetListServlet</servlet-name>
+        <servlet-class>com.petadoption.web.PetListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PetListServlet</servlet-name>
+        <url-pattern>/pets</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>PetDetailsServlet</servlet-name>
+        <servlet-class>com.petadoption.web.PetDetailsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PetDetailsServlet</servlet-name>
+        <url-pattern>/pet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SubmitAdoptionRequestServlet</servlet-name>
+        <servlet-class>com.petadoption.web.SubmitAdoptionRequestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubmitAdoptionRequestServlet</servlet-name>
+        <url-pattern>/adopt</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminDashboardServlet</servlet-name>
+        <servlet-class>com.petadoption.web.AdminDashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminDashboardServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminApproveRequestServlet</servlet-name>
+        <servlet-class>com.petadoption.web.AdminApproveRequestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminApproveRequestServlet</servlet-name>
+        <url-pattern>/admin/approve</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminRejectRequestServlet</servlet-name>
+        <servlet-class>com.petadoption.web.AdminRejectRequestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminRejectRequestServlet</servlet-name>
+        <url-pattern>/admin/reject</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+</web-app>
