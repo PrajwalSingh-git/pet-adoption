@@ -1,4 +1,3 @@
-
 package com.petadoption.dao;
 
 import com.petadoption.model.*;
@@ -8,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class JdbcPetDAO implements PetDAO {
@@ -19,7 +19,7 @@ public class JdbcPetDAO implements PetDAO {
                                       String breed, String nameQuery, int offset, int limit) {
         List<Pet> pets = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM pets WHERE 1=1");
-        java.util.List<Object> params = new java.util.ArrayList<>();
+        List<Object> params = new ArrayList<>();
 
         if (status != null) {
             sql.append(" AND status = ?");
@@ -50,6 +50,8 @@ public class JdbcPetDAO implements PetDAO {
         params.add(limit);
         params.add(offset);
 
+        LOGGER.info("Executing filtered pet query: " + sql);
+
         try (Connection conn = DBConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
@@ -63,7 +65,7 @@ public class JdbcPetDAO implements PetDAO {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.severe("Error fetching filtered pets: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error fetching filtered pets", e);
             throw new RuntimeException("Error fetching pets", e);
         }
         return pets;
@@ -81,7 +83,7 @@ public class JdbcPetDAO implements PetDAO {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.severe("Error fetching pet by id: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error fetching pet by id " + id, e);
             throw new RuntimeException("Error fetching pet", e);
         }
         return Optional.empty();
@@ -101,13 +103,15 @@ public class JdbcPetDAO implements PetDAO {
             ps.setString(6, pet.getImagePath());
             ps.setString(7, pet.getStatus().name());
             ps.executeUpdate();
+
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
                     pet.setId(keys.getLong(1));
                 }
             }
+            LOGGER.info("Inserted new pet with id=" + pet.getId());
         } catch (SQLException e) {
-            LOGGER.severe("Error saving pet: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error saving pet", e);
             throw new RuntimeException("Error saving pet", e);
         }
     }
@@ -126,8 +130,9 @@ public class JdbcPetDAO implements PetDAO {
             ps.setString(7, pet.getStatus().name());
             ps.setLong(8, pet.getId());
             ps.executeUpdate();
+            LOGGER.info("Updated pet id=" + pet.getId());
         } catch (SQLException e) {
-            LOGGER.severe("Error updating pet: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error updating pet", e);
             throw new RuntimeException("Error updating pet", e);
         }
     }
@@ -139,8 +144,9 @@ public class JdbcPetDAO implements PetDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, id);
             ps.executeUpdate();
+            LOGGER.info("Deleted pet id=" + id);
         } catch (SQLException e) {
-            LOGGER.severe("Error deleting pet: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error deleting pet", e);
             throw new RuntimeException("Error deleting pet", e);
         }
     }
@@ -153,8 +159,9 @@ public class JdbcPetDAO implements PetDAO {
             ps.setString(1, status.name());
             ps.setLong(2, id);
             ps.executeUpdate();
+            LOGGER.info("Updated pet status id=" + id + " -> " + status);
         } catch (SQLException e) {
-            LOGGER.severe("Error updating pet status: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error updating pet status", e);
             throw new RuntimeException("Error updating pet status", e);
         }
     }
@@ -170,7 +177,7 @@ public class JdbcPetDAO implements PetDAO {
                 pets.add(mapRowToPet(rs));
             }
         } catch (SQLException e) {
-            LOGGER.severe("Error fetching all pets: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error fetching all pets", e);
             throw new RuntimeException("Error fetching pets", e);
         }
         return pets;
@@ -194,7 +201,9 @@ public class JdbcPetDAO implements PetDAO {
             default:
                 return new Pet(id, name, type, breed, age, description, imagePath, status) {
                     @Override
-                    public double getAdoptionFee() { return 1500.0; }
+                    public double getAdoptionFee() {
+                        return 1500.0;
+                    }
                 };
         }
     }
