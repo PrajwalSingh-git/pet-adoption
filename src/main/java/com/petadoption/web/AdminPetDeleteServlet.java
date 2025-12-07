@@ -1,9 +1,8 @@
 
 package com.petadoption.web;
 
-import com.petadoption.dao.JdbcAdoptionRequestDAO;
 import com.petadoption.dao.JdbcPetDAO;
-import com.petadoption.service.AdoptionService;
+import com.petadoption.dao.PetDAO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -12,13 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-public class AdminRejectRequestServlet extends HttpServlet {
+public class AdminPetDeleteServlet extends HttpServlet {
 
-    private AdoptionService adoptionService;
+    private PetDAO petDAO;
 
     @Override
     public void init() {
-        this.adoptionService = new AdoptionService(new JdbcAdoptionRequestDAO(), new JdbcPetDAO());
+        this.petDAO = new JdbcPetDAO();
     }
 
     @Override
@@ -29,7 +28,7 @@ public class AdminRejectRequestServlet extends HttpServlet {
             return;
         }
         Long id = Long.valueOf(req.getParameter("id"));
-        adoptionService.rejectRequest(id);
+        petDAO.delete(id);
         resp.sendRedirect(req.getContextPath() + "/admin");
     }
 }

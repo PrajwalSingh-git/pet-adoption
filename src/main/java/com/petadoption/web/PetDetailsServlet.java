@@ -1,3 +1,4 @@
+
 package com.petadoption.web;
 
 import com.petadoption.dao.JdbcPetDAO;
@@ -26,11 +27,8 @@ public class PetDetailsServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/pets");
             return;
         }
-
         Long id = Long.valueOf(idParam);
-        Pet pet = petDAO.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pet not found"));
-
+        Pet pet = petDAO.findById(id).orElseThrow(() -> new RuntimeException("Pet not found"));
         req.setAttribute("pet", pet);
         req.getRequestDispatcher("/WEB-INF/views/pet-details.jsp").forward(req, resp);
     }

@@ -1,3 +1,4 @@
+
 package com.petadoption.web;
 
 import com.petadoption.dao.JdbcAdoptionRequestDAO;
@@ -47,10 +48,8 @@ public class SubmitAdoptionRequestServlet extends HttpServlet {
             adoptionService.submitRequest(petId, user.getId(), message);
             resp.sendRedirect(req.getContextPath() + "/pets?success=1");
         } catch (ValidationException e) {
-            // Reload pet details with error
             req.setAttribute("error", e.getMessage());
-            req.setAttribute("pet", petDAO.findById(petId)
-                    .orElseThrow(() -> new RuntimeException("Pet not found")));
+            req.setAttribute("pet", petDAO.findById(petId).orElse(null));
             req.getRequestDispatcher("/WEB-INF/views/pet-details.jsp").forward(req, resp);
         }
     }

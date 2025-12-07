@@ -1,3 +1,4 @@
+
 package com.petadoption.model;
 
 import java.time.LocalDateTime;

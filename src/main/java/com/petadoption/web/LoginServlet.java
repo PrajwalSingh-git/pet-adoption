@@ -1,3 +1,4 @@
+
 package com.petadoption.web;
 
 import com.petadoption.dao.JdbcUserDAO;
@@ -13,9 +14,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class LoginServlet extends HttpServlet {
 
+    private static final Logger LOGGER = Logger.getLogger(LoginServlet.class.getName());
     private UserService userService;
 
     @Override
@@ -52,6 +55,7 @@ public class LoginServlet extends HttpServlet {
                 req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
             }
         } catch (ValidationException e) {
+            LOGGER.warning("Login validation error: " + e.getMessage());
             req.setAttribute("error", e.getMessage());
             req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
         }

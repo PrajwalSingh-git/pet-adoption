@@ -1,3 +1,4 @@
+
 package com.petadoption.web;
 
 import com.petadoption.dao.JdbcAdoptionRequestDAO;
@@ -27,7 +28,6 @@ public class AdminApproveRequestServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
-
         Long id = Long.valueOf(req.getParameter("id"));
         adoptionService.approveRequest(id);
         resp.sendRedirect(req.getContextPath() + "/admin");

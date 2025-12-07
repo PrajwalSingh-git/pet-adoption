@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -91,7 +92,43 @@
         <url-pattern>/admin/reject</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AdminPetCreateServlet</servlet-name>
+        <servlet-class>com.petadoption.web.AdminPetCreateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminPetCreateServlet</servlet-name>
+        <url-pattern>/admin/pets/new</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminPetEditServlet</servlet-name>
+        <servlet-class>com.petadoption.web.AdminPetEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminPetEditServlet</servlet-name>
+        <url-pattern>/admin/pets/edit</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminPetDeleteServlet</servlet-name>
+        <servlet-class>com.petadoption.web.AdminPetDeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminPetDeleteServlet</servlet-name>
+        <url-pattern>/admin/pets/delete</url-pattern>
+    </servlet-mapping>
+
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/views/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/views/error.jsp</location>
+    </error-page>
 </web-app>

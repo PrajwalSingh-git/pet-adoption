@@ -1,3 +1,4 @@
+
 package com.petadoption.model;
 
 public abstract class Pet {
@@ -7,19 +8,20 @@ public abstract class Pet {
     private String breed;
     private int ageYears;
     private String description;
+    private String imagePath;
     private PetStatus status;
 
-    protected Pet() {
-    }
+    protected Pet() { }
 
     protected Pet(Long id, String name, PetType type, String breed,
-                  int ageYears, String description, PetStatus status) {
+                  int ageYears, String description, String imagePath, PetStatus status) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.breed = breed;
         this.ageYears = ageYears;
         this.description = description;
+        this.imagePath = imagePath;
         this.status = status;
     }
 
@@ -42,6 +44,9 @@ public abstract class Pet {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 
     public PetStatus getStatus() { return status; }
     public void setStatus(PetStatus status) { this.status = status; }

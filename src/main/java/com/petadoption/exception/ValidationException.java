@@ -1,3 +1,4 @@
+
 package com.petadoption.exception;
 
 public class ValidationException extends Exception {

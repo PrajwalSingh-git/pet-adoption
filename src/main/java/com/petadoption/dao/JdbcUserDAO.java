@@ -1,3 +1,4 @@
+
 package com.petadoption.dao;
 
 import com.petadoption.model.Admin;
@@ -8,15 +9,17 @@ import com.petadoption.util.PasswordUtil;
 
 import java.sql.*;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class JdbcUserDAO implements UserDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(JdbcUserDAO.class.getName());
 
     @Override
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         try (Connection conn = DBConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -24,7 +27,8 @@ public class JdbcUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error fetching user by email", e);
+            LOGGER.severe("Error fetching user by email: " + e.getMessage());
+            throw new RuntimeException("Error fetching user", e);
         }
         return Optional.empty();
     }
@@ -34,7 +38,6 @@ public class JdbcUserDAO implements UserDAO {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DBConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -42,7 +45,8 @@ public class JdbcUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error fetching user by id", e);
+            LOGGER.severe("Error fetching user by id: " + e.getMessage());
+            throw new RuntimeException("Error fetching user", e);
         }
         return Optional.empty();
     }
@@ -52,12 +56,10 @@ public class JdbcUserDAO implements UserDAO {
         String sql = "INSERT INTO users(email, password_hash, full_name, role) VALUES (?,?,?,?)";
         try (Connection conn = DBConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPasswordHash());
             ps.setString(3, user.getFullName());
             ps.setString(4, user.getRole());
-
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
@@ -65,6 +67,7 @@ public class JdbcUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException e) {
+            LOGGER.severe("Error saving user: " + e.getMessage());
             throw new RuntimeException("Error saving user", e);
         }
     }

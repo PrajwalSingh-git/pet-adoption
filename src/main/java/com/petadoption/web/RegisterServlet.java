@@ -1,3 +1,4 @@
+
 package com.petadoption.web;
 
 import com.petadoption.dao.JdbcUserDAO;
@@ -12,9 +13,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class RegisterServlet extends HttpServlet {
 
+    private static final Logger LOGGER = Logger.getLogger(RegisterServlet.class.getName());
     private UserService userService;
 
     @Override
@@ -41,6 +44,7 @@ public class RegisterServlet extends HttpServlet {
             session.setAttribute("role", user.getRole());
             resp.sendRedirect(req.getContextPath() + "/pets");
         } catch (ValidationException e) {
+            LOGGER.warning("Registration validation error: " + e.getMessage());
             req.setAttribute("error", e.getMessage());
             req.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(req, resp);
         }

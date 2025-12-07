@@ -1,5 +1,3 @@
-package com.petadoption.model;
 
-public enum PetStatus {
-    AVAILABLE, PENDING, ADOPTED
-}
+package com.petadoption.model;
+public enum PetStatus { AVAILABLE, PENDING, ADOPTED }

@@ -1,3 +1,4 @@
+
 package com.petadoption.model;
 
 public abstract class User {
@@ -6,7 +7,7 @@ public abstract class User {
     private String passwordHash;
     private String fullName;
 
-    protected User() {}
+    protected User() { }
 
     protected User(Long id, String email, String passwordHash, String fullName) {
         this.id = id;

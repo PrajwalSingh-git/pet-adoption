@@ -1,9 +1,12 @@
+
 package com.petadoption.web;
 
 import com.petadoption.dao.JdbcAdoptionRequestDAO;
 import com.petadoption.dao.JdbcPetDAO;
-import com.petadoption.service.AdoptionService;
 import com.petadoption.model.AdoptionRequest;
+import com.petadoption.model.Pet;
+import com.petadoption.service.AdoptionService;
+import com.petadoption.service.PetService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -16,10 +19,13 @@ import java.util.List;
 public class AdminDashboardServlet extends HttpServlet {
 
     private AdoptionService adoptionService;
+    private PetService petService;
 
     @Override
     public void init() {
-        this.adoptionService = new AdoptionService(new JdbcAdoptionRequestDAO(), new JdbcPetDAO());
+        JdbcPetDAO petDAO = new JdbcPetDAO();
+        this.adoptionService = new AdoptionService(new JdbcAdoptionRequestDAO(), petDAO);
+        this.petService = new PetService(petDAO);
     }
 
     @Override
@@ -31,7 +37,10 @@ public class AdminDashboardServlet extends HttpServlet {
         }
 
         List<AdoptionRequest> pending = adoptionService.listPendingRequests();
+        List<Pet> allPets = petService.getAllPets();
+
         req.setAttribute("pendingRequests", pending);
+        req.setAttribute("pets", allPets);
         req.getRequestDispatcher("/WEB-INF/views/admin-dashboard.jsp").forward(req, resp);
     }
 }

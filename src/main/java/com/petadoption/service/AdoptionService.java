@@ -1,3 +1,4 @@
+
 package com.petadoption.service;
 
 import com.petadoption.dao.AdoptionRequestDAO;
@@ -6,9 +7,11 @@ import com.petadoption.exception.ValidationException;
 import com.petadoption.model.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class AdoptionService {
 
+    private static final Logger LOGGER = Logger.getLogger(AdoptionService.class.getName());
     private final AdoptionRequestDAO requestDAO;
     private final PetDAO petDAO;
 
@@ -25,28 +28,30 @@ public class AdoptionService {
             throw new ValidationException("Pet is not available for adoption.");
         }
 
-        AdoptionRequest request = new AdoptionRequest();
-        request.setPetId(petId);
-        request.setAdopterId(adopterId);
-        request.setMessage(message);
-        request.setStatus(AdoptionStatus.PENDING);
-
-        requestDAO.save(request);
+        AdoptionRequest req = new AdoptionRequest();
+        req.setPetId(petId);
+        req.setAdopterId(adopterId);
+        req.setMessage(message);
+        req.setStatus(AdoptionStatus.PENDING);
+        requestDAO.save(req);
         petDAO.updateStatus(petId, PetStatus.PENDING);
+        LOGGER.info("Adoption request submitted for pet " + petId + " by adopter " + adopterId);
     }
 
     public void approveRequest(Long requestId) {
-        AdoptionRequest request = requestDAO.findById(requestId)
+        AdoptionRequest req = requestDAO.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
         requestDAO.updateStatus(requestId, AdoptionStatus.APPROVED);
-        petDAO.updateStatus(request.getPetId(), PetStatus.ADOPTED);
+        petDAO.updateStatus(req.getPetId(), PetStatus.ADOPTED);
+        LOGGER.info("Adoption request approved: " + requestId);
     }
 
     public void rejectRequest(Long requestId) {
-        AdoptionRequest request = requestDAO.findById(requestId)
+        AdoptionRequest req = requestDAO.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
         requestDAO.updateStatus(requestId, AdoptionStatus.REJECTED);
-        petDAO.updateStatus(request.getPetId(), PetStatus.AVAILABLE);
+        petDAO.updateStatus(req.getPetId(), PetStatus.AVAILABLE);
+        LOGGER.info("Adoption request rejected: " + requestId);
     }
 
     public List<AdoptionRequest> listPendingRequests() {
