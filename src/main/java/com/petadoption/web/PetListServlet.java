@@ -1,4 +1,3 @@
-
 package com.petadoption.web;
 
 import com.petadoption.dao.JdbcPetDAO;
@@ -12,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PetListServlet extends HttpServlet {
@@ -21,6 +21,7 @@ public class PetListServlet extends HttpServlet {
 
     @Override
     public void init() {
+        LOGGER.info("Initializing PetListServlet");
         this.petService = new PetService(new JdbcPetDAO());
     }
 
@@ -36,11 +37,12 @@ public class PetListServlet extends HttpServlet {
 
         int page = 0;
         int size = 5;
+
         try {
             page = InputValidator.parsePositiveInt(pageStr, "page", 0);
             size = InputValidator.parsePositiveInt(sizeStr, "size", 5);
         } catch (Exception e) {
-            LOGGER.warning("Invalid pagination params: " + e.getMessage());
+            LOGGER.log(Level.WARNING, "Invalid pagination parameters, defaulting to page=0,size=5", e);
         }
 
         Integer ageMin = null;
@@ -53,8 +55,11 @@ public class PetListServlet extends HttpServlet {
                 ageMax = InputValidator.parsePositiveInt(ageMaxStr, "ageMax", 0);
             }
         } catch (Exception e) {
-            LOGGER.warning("Invalid age filters: " + e.getMessage());
+            LOGGER.log(Level.WARNING, "Invalid age filters", e);
         }
+
+        LOGGER.info(String.format("Listing pets page=%d size=%d type=%s breed=%s ageMin=%s ageMax=%s q=%s",
+                page, size, type, breed, ageMin, ageMax, q));
 
         List<Pet> pets = petService.getPetsPage(type, ageMin, ageMax, breed, q, page, size);
         boolean hasNext = pets.size() == size;
@@ -63,6 +68,7 @@ public class PetListServlet extends HttpServlet {
         req.setAttribute("page", page);
         req.setAttribute("size", size);
         req.setAttribute("hasNext", hasNext);
+
         req.getRequestDispatcher("/WEB-INF/views/pets.jsp").forward(req, resp);
     }
 }
