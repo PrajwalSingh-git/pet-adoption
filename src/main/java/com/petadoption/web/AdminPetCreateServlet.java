@@ -1,4 +1,3 @@
-
 package com.petadoption.web;
 
 import com.petadoption.dao.JdbcPetDAO;
@@ -14,19 +13,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @MultipartConfig
 public class AdminPetCreateServlet extends HttpServlet {
 
+    private static final Logger LOGGER = Logger.getLogger(AdminPetCreateServlet.class.getName());
     private PetDAO petDAO;
 
     @Override
     public void init() {
         this.petDAO = new JdbcPetDAO();
+        LOGGER.info("AdminPetCreateServlet initialized");
     }
 
     @Override
@@ -58,26 +62,29 @@ public class AdminPetCreateServlet extends HttpServlet {
 
         try {
             InputValidator.requireNonEmpty(name, "Name");
+
             PetType type = PetType.valueOf(typeStr);
             int age = InputValidator.parsePositiveInt(ageStr, "Age", 0);
             PetStatus status = PetStatus.valueOf(statusStr);
 
             Part imagePart = req.getPart("image");
             String fileName = null;
+
             if (imagePart != null && imagePart.getSize() > 0) {
                 String uploadsDir = getServletContext().getRealPath("/uploads/pets");
                 File dir = new File(uploadsDir);
-                if (!dir.exists()) {
-                    dir.mkdirs();
+                if (!dir.exists() && !dir.mkdirs()) {
+                    throw new IOException("Could not create uploads directory");
                 }
+
                 String submitted = imagePart.getSubmittedFileName();
                 String ext = "";
                 if (submitted != null && submitted.contains(".")) {
                     ext = submitted.substring(submitted.lastIndexOf('.'));
                 }
                 fileName = UUID.randomUUID() + ext;
-                File file = new File(dir, fileName);
-                Files.copy(imagePart.getInputStream(), file.toPath());
+                File target = new File(dir, fileName);
+                Files.copy(imagePart.getInputStream(), target.toPath());
             }
 
             Pet pet;
@@ -91,13 +98,22 @@ public class AdminPetCreateServlet extends HttpServlet {
                 default:
                     pet = new Pet(null, name, type, breed, age, description, fileName, status) {
                         @Override
-                        public double getAdoptionFee() { return 1500.0; }
+                        public double getAdoptionFee() {
+                            return 1500.0;
+                        }
                     };
             }
+
             petDAO.save(pet);
+            LOGGER.info("Admin created new pet id=" + pet.getId());
             resp.sendRedirect(req.getContextPath() + "/admin");
         } catch (ValidationException | IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "Validation error creating pet", e);
             req.setAttribute("error", e.getMessage());
+            req.getRequestDispatcher("/WEB-INF/views/admin-pet-form.jsp").forward(req, resp);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error saving uploaded image", e);
+            req.setAttribute("error", "Failed to upload image.");
             req.getRequestDispatcher("/WEB-INF/views/admin-pet-form.jsp").forward(req, resp);
         }
     }
