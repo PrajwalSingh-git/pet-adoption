@@ -317,21 +317,6 @@ ValidationException for business-rule violations (e.g., pet not available)
 
 User-friendly error messages passed to JSP via request attributes
 
-🧩 Possible Extensions / Roadmap
-
-Some ideas to extend this project:
-
-Add pagination and advanced search filters (type, age, breed)
-
-File upload for pet images
-
-Admin CRUD UI for managing pets
-
-More robust form validation and error pages
-
-Logging (e.g., using java.util.logging or Log4j)
-
-Switch to PostgreSQL or another RDBMS
 
 📄 License
 
